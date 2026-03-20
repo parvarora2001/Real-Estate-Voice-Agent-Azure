@@ -1,0 +1,15 @@
+.env
+.venv
+venv/
+__pycache__/
+*.pyc
+*.pyo
+leads/
+leads.db
+*.mp3
+*.wav
+logs.zip
+LogFiles/
+deployments/
+.env.template
+EOF

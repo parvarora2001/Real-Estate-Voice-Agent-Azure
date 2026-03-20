@@ -1,0 +1,12 @@
+.env
+.env.template
+__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+venv
+leads/
+leads.db
+*.mp3
+*.wav

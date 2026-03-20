@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Luxury Properties - Get Started</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .success {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        .success h2 {
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="form-container">
+            <h1>🏡 Find Your Dream Home</h1>
+            <p>Fill out this quick form and our AI assistant will call you within 30 seconds to help you find the perfect property!</p>
+            
+            <form id="leadForm">
+                <div class="form-group">
+                    <label for="name">Your Name *</label>
+                    <input type="text" id="name" name="name" required placeholder="John Doe">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 123-4567">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email (Optional)</label>
+                    <input type="email" id="email" name="email" placeholder="john@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="interest">What are you looking for?</label>
+                    <select id="interest" name="interest">
+                        <option value="">Select...</option>
+                        <option value="house">House</option>
+                        <option value="condo">Condo</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="townhouse">Townhouse</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="budget">Approximate Budget</label>
+                    <select id="budget" name="budget">
+                        <option value="">Select...</option>
+                        <option value="300000">Under $300k</option>
+                        <option value="500000">$300k - $500k</option>
+                        <option value="750000">$500k - $750k</option>
+                        <option value="1000000">$750k - $1M</option>
+                        <option value="1000001">Over $1M</option>
+                    </select>
+                </div>
+                
+                <button type="submit" id="submitBtn">
+                    <span id="btnText">Get My Free Consultation Call</span>
+                    <div class="spinner" id="spinner"></div>
+                </button>
+            </form>
+        </div>
+        
+        <div class="success" id="success">
+            <h2>✅ Thank You!</h2>
+            <p><strong>Your phone will ring in the next 30 seconds!</strong></p>
+            <p>Our AI assistant will help you find the perfect property. Please answer the call from our number.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('leadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+            
+            // Show loading
+            btnText.style.display = 'none';
+            spinner.style.display = 'block';
+            btn.disabled = true;
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                property_interest: document.getElementById('interest').value,
+                budget: document.getElementById('budget').value ? parseInt(document.getElementById('budget').value) : null,
+                source: 'web_form',
+                utm_source: new URLSearchParams(window.location.search).get('utm_source') || 'direct'
+            };
+            
+            try {
+                // Submit to backend
+                const response = await fetch('/api/submit-lead', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    // Show success
+                    document.getElementById('form-container').style.display = 'none';
+                    document.getElementById('success').style.display = 'block';
+                } else {
+                    alert('Something went wrong. Please try again or call us directly.');
+                    btnText.style.display = 'block';
+                    spinner.style.display = 'none';
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                alert('Error submitting form. Please try again.');
+                btnText.style.display = 'block';
+                spinner.style.display = 'none';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
