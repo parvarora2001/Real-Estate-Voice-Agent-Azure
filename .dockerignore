@@ -10,3 +10,5 @@ leads/
 leads.db
 *.mp3
 *.wav
+.envu
+dump.rdb
