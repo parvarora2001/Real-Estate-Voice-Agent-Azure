@@ -13,3 +13,5 @@ LogFiles/
 deployments/
 .env.template
 EOF
+.envu
+dump.rdb
